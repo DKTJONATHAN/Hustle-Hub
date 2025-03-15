@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hustle Hub - Empowering Kenyan Gen-Z</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">
+            <h1>Hustle Hub</h1>
+        </div>
+        <div class="hamburger">☰</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#jobs">Jobs</a></li>
+            <li><a href="#freelance">Freelance</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#mentorship">Mentorship</a></li>
+            <li><a href="#register">Register</a></li>
+            <li><a href="#employer">Employers</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <h2>Your Hustle Starts Here</h2>
+        <p>Join thousands of Kenyan Gen-Z turning passion into paychecks.</p>
+        <button class="cta-button" onclick="document.getElementById('register').scrollIntoView()">Get Started</button>
+    </section>
+
+    <!-- Jobs Section -->
+    <section id="jobs" class="content-section">
+        <h2>Find Jobs</h2>
+        <p>Browse opportunities tailored for you.</p>
+        <div class="job-listings">
+            <div class="job-card">
+                <h3>Data Entry Clerk</h3>
+                <p>Remote | KSh 500/day</p>
+                <button>Apply Now</button>
+            </div>
+            <div class="job-card">
+                <h3>Customer Support</h3>
+                <p>Nairobi | KSh 20,000/month</p>
+                <button>Apply Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Freelance Marketplace Section -->
+    <section id="freelance" class="content-section">
+        <h2>Freelance Marketplace</h2>
+        <p>Offer or hire skills—your way.</p>
+        <div class="freelance-profiles">
+            <div class="profile-card">
+                <h3>Jane M.</h3>
+                <p>Graphic Designer | KSh 1,000/project</p>
+                <button>Hire Now</button>
+            </div>
+            <div class="profile-card">
+                <h3>Peter K.</h3>
+                <p>Writer | KSh 500/article</p>
+                <button>Hire Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="content-section">
+        <h2>Learn Skills</h2>
+        <p>Free courses to level up.</p>
+        <div class="skills-courses">
+            <div class="course-card">
+                <h3>Intro to Coding</h3>
+                <p>4 weeks</p>
+                <button>Enroll Now</button>
+            </div>
+            <div class="course-card">
+                <h3>Digital Marketing</h3>
+                <p>6 weeks</p>
+                <button>Enroll Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mentorship Section -->
+    <section id="mentorship" class="content-section">
+        <h2>Mentorship Network</h2>
+        <p>Connect with pros.</p>
+        <div class="mentor-profiles">
+            <div class="mentor-card">
+                <h3>Sarah N.</h3>
+                <p>Entrepreneur | 10+ yrs</p>
+                <button>Request Mentor</button>
+            </div>
+            <div class="mentor-card">
+                <h3>David O.</h3>
+                <p>Marketer | 7+ yrs</p>
+                <button>Request Mentor</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Job Seeker Registration Section -->
+    <section id="register" class="content-section">
+        <h2>Register</h2>
+        <p>Let employers find you!</p>
+        <form id="job-seeker-form">
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="phone">Phone:</label>
+            <input type="tel" id="phone" name="phone" required>
+
+            <label for="category">Job Category:</label>
+            <select id="category" name="category" required>
+                <option value="">Select</option>
+                <option value="tech">Tech (Coding, IT)</option>
+                <option value="design">Creative (Design)</option>
+                <option value="writing">Writing</option>
+                <option value="customer">Customer Service</option>
+                <option value="sales">Sales & Marketing</option>
+                <option value="other">Other</option>
+            </select>
+
+            <label for="skills">Skills (comma-separated):</label>
+            <textarea id="skills" name="skills" rows="3" placeholder="e.g., Python, Design" required></textarea>
+
+            <label for="experience">Experience (Years):</label>
+            <input type="number" id="experience" name="experience" min="0" max="50" required>
+
+            <button type="submit">Submit</button>
+        </form>
+    </section>
+
+    <!-- Employer Dashboard Section -->
+    <section id="employer" class="content-section">
+        <h2>Employers</h2>
+        <p>Find talent by category.</p>
+        <div class="search-bar">
+            <input type="text" id="employer-search" placeholder="Search skills or name...">
+            <button onclick="searchJobSeekers()">Search</button>
+        </div>
+        <div class="category-filter">
+            <label for="filter-category">Filter:</label>
+            <select id="filter-category" onchange="filterJobSeekers()">
+                <option value="all">All</option>
+                <option value="tech">Tech</option>
+                <option value="design">Creative</option>
+                <option value="writing">Writing</option>
+                <option value="customer">Customer Service</option>
+                <option value="sales">Sales & Marketing</option>
+                <option value="other">Other</option>
+            </select>
+        </div>
+        <div id="job-seeker-list" class="job-seeker-list">
+            <!-- Dynamic list here -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Hustle Hub</p>
+        <div class="social-links">
+            <a href="#">Twitter</a>
+            <a href="#">Email</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
