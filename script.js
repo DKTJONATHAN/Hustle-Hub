@@ -1,178 +1,79 @@
-// script.js
+let posts = [];
 
-// 1. Hamburger Menu Toggle
-const hamburger = document.querySelector('.hamburger');
-const navLinks = document.querySelector('.nav-links');
-
-if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-    });
-} else {
-    console.error('Hamburger or nav-links not found');
+async function fetchPosts() {
+  try {
+    const response = await fetch('/api/fetch-posts');
+    posts = await response.json();
+    if (!Array.isArray(posts)) throw new Error('Invalid posts data');
+    renderCategories();
+    renderPosts(posts);
+    document.getElementById('loader').style.display = 'none'; // Hide loader
+  } catch (error) {
+    console.error('Failed to fetch posts:', error);
+    document.getElementById('postList').innerHTML = '<p class="text-center text-muted col-span-full">Failed to load posts.</p>';
+    document.getElementById('loader').style.display = 'none';
+  }
 }
 
-// 2. Data Storage and Retrieval Functions
-const JOB_SEEKERS_KEY = 'jobSeekers';
-
-function getJobSeekers() {
-    try {
-        const data = localStorage.getItem(JOB_SEEKERS_KEY);
-        return data ? JSON.parse(data) : [];
-    } catch (error) {
-        console.error('Error retrieving job seekers:', error);
-        return [];
-    }
+function renderPosts(postsToRender) {
+  const postList = document.getElementById('postList');
+  postList.innerHTML = postsToRender.length ? '' : '<p class="text-center text-muted col-span-full">No posts found.</p>';
+  postsToRender.forEach(post => {
+    postList.innerHTML += `
+      <a href="content/articles/${post.slug}.html" class="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+        ${post.image ? `<img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover">` : ''}
+        <div class="p-4">
+          <h2 class="text-xl font-bold mb-2">${post.title}</h2>
+          <p class="text-muted text-sm mb-2">${post.description}</p>
+          <div class="flex justify-between text-muted text-sm">
+            <span>${post.category}</span>
+            <time>${new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</time>
+          </div>
+          ${post.tags ? `<div class="flex flex-wrap gap-2 mt-2">${post.tags.split(',').map(tag => `<span class="bg-gray-200 text-xs px-2 py-1 rounded">${tag.trim()}</span>`).join('')}</div>` : ''}
+          <button class="mt-4 bg-gradient-to-r from-primary to-secondary text-white px-4 py-2 rounded-lg hover:opacity-90">Read More</button>
+        </div>
+      </a>
+    `;
+  });
 }
 
-function saveJobSeekers(jobSeekers) {
-    try {
-        localStorage.setItem(JOB_SEEKERS_KEY, JSON.stringify(jobSeekers));
-        return true;
-    } catch (error) {
-        console.error('Error saving job seekers:', error);
-        return false;
-    }
+function renderCategories() {
+  const categories = ['All', ...new Set(posts.map(post => post.category))];
+  const categoryFilter = document.getElementById('categoryFilter');
+  categoryFilter.innerHTML = categories.map(category => `
+    <button
+      onclick="filterByCategory('${category}')"
+      class="px-4 py-2 rounded-lg text-sm font-medium transition-colors ${category === 'All' ? 'bg-gradient-to-r from-primary to-secondary text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}"
+    >${category}</button>
+  `).join('');
 }
 
-function getJobSeekerById(id) {
-    const jobSeekers = getJobSeekers();
-    return jobSeekers.find(seeker => seeker.id === id) || null;
-}
-
-// 3. Job Seeker Form Submission
-const jobSeekerForm = document.getElementById('job-seeker-form');
-const jobSeekerList = document.getElementById('job-seeker-list');
-
-if (!jobSeekerForm) {
-    console.error('Form with ID "job-seeker-form" not found');
-} else {
-    console.log('Form found, attaching event listener');
-    jobSeekerForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        console.log('Form submitted');
-
-        const jobSeeker = {
-            name: document.getElementById('name').value.trim(),
-            email: document.getElementById('email').value.trim(),
-            phone: document.getElementById('phone').value.trim(),
-            category: document.getElementById('category').value,
-            skills: document.getElementById('skills').value.split(',').map(skill => skill.trim()),
-            experience: parseInt(document.getElementById('experience').value, 10),
-            id: Date.now()
-        };
-
-        console.log('Job Seeker Data:', jobSeeker);
-
-        if (!jobSeeker.name || !jobSeeker.email || !jobSeeker.phone || !jobSeeker.category || !jobSeeker.skills.length || isNaN(jobSeeker.experience)) {
-            alert('Please fill out all fields correctly.');
-            console.log('Validation failed');
-            return;
-        }
-
-        jobSeekers.push(jobSeeker);
-        if (saveJobSeekers(jobSeekers)) {
-            jobSeekerForm.reset();
-            displayJobSeekers(jobSeekers);
-            alert('Registration successful! Employers can now find you.');
-            console.log('Data saved and displayed');
-        } else {
-            alert('Failed to save your data. Please try again.');
-            console.log('Save failed');
-        }
-    });
-}
-
-let jobSeekers = getJobSeekers();
-
-// 4. Employer Dashboard Functions
-function displayJobSeekers(jobSeekersArray) {
-    if (!jobSeekerList) {
-        console.error('Job seeker list container not found');
-        return;
-    }
-    jobSeekerList.innerHTML = '';
-
-    if (jobSeekersArray.length === 0) {
-        jobSeekerList.innerHTML = '<p>No job seekers found.</p>';
-        return;
-    }
-
-    jobSeekersArray.forEach(seeker => {
-        const seekerCard = document.createElement('div');
-        seekerCard.classList.add('job-seeker-card');
-        seekerCard.innerHTML = `
-            <h3>${seeker.name}</h3>
-            <p><strong>Category:</strong> ${seeker.category}</p>
-            <p><strong>Skills:</strong> ${seeker.skills.join(', ')}</p>
-            <p><strong>Experience:</strong> ${seeker.experience} years</p>
-            <p><strong>Contact:</strong> ${seeker.email} | ${seeker.phone}</p>
-            <button onclick="contactJobSeeker('${seeker.email}')">Contact</button>
-            <button onclick="deleteJobSeeker(${seeker.id})" class="delete-btn">Delete</button>
-        `;
-        jobSeekerList.appendChild(seekerCard);
-    });
-}
-
-// Initial display
-displayJobSeekers(jobSeekers);
-
-// 5. Search Job Seekers
-function searchJobSeekers() {
-    const searchInput = document.getElementById('employer-search');
-    if (!searchInput) {
-        console.error('Search input not found');
-        return;
-    }
-    const searchTerm = searchInput.value.toLowerCase().trim();
-    const filteredSeekers = jobSeekers.filter(seeker => 
-        seeker.name.toLowerCase().includes(searchTerm) ||
-        seeker.skills.some(skill => skill.toLowerCase().includes(searchTerm)) ||
-        seeker.category.toLowerCase().includes(searchTerm)
+function filterPosts() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const selectedCategory = document.querySelector('#categoryFilter .bg-gradient-to-r')?.textContent || 'All';
+  let filtered = posts;
+  if (query) {
+    filtered = filtered.filter(post =>
+      post.title.toLowerCase().includes(query) ||
+      post.description.toLowerCase().includes(query) ||
+      (post.tags && post.tags.toLowerCase().includes(query))
     );
-    displayJobSeekers(filteredSeekers);
+  }
+  if (selectedCategory !== 'All') {
+    filtered = filtered.filter(post => post.category === selectedCategory);
+  }
+  renderPosts(filtered);
 }
 
-// 6. Filter Job Seekers by Category
-function filterJobSeekers() {
-    const filterSelect = document.getElementById('filter-category');
-    if (!filterSelect) {
-        console.error('Filter select not found');
-        return;
-    }
-    const category = filterSelect.value;
-    const filteredSeekers = category === 'all' 
-        ? jobSeekers 
-        : jobSeekers.filter(seeker => seeker.category === category);
-    displayJobSeekers(filteredSeekers);
+function filterByCategory(category) {
+  document.querySelectorAll('#categoryFilter button').forEach(btn => {
+    btn.classList.remove('bg-gradient-to-r', 'from-primary', 'to-secondary', 'text-white');
+    btn.classList.add('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+  });
+  event.target.classList.add('bg-gradient-to-r', 'from-primary', 'to-secondary', 'text-white');
+  event.target.classList.remove('bg-gray-200', 'text-gray-700', 'hover:bg-gray-300');
+  filterPosts();
 }
 
-// 7. Contact and Delete Functions
-function contactJobSeeker(email) {
-    alert(`Contacting ${email} - feature coming soon!`);
-}
-
-function deleteJobSeeker(id) {
-    if (confirm('Are you sure you want to delete this job seeker?')) {
-        jobSeekers = jobSeekers.filter(seeker => seeker.id !== id);
-        if (saveJobSeekers(jobSeekers)) {
-            displayJobSeekers(jobSeekers);
-            alert('Job seeker deleted successfully.');
-        } else {
-            alert('Failed to delete job seeker.');
-        }
-    }
-}
-
-// 8. Scroll Animation for Sections
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('visible');
-        }
-    });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.content-section').forEach(section => {
-    observer.observe(section);
-});
+// Fetch posts on page load
+fetchPosts();
