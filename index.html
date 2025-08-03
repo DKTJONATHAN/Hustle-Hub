@@ -1,167 +1,71 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hustle Hub - Empowering Kenyan Gen-Z</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mwaniki Reports | Blogs</title>
+  <meta name="description" content="Your trusted source for news, sports, tech, and entertainment.">
+  <meta property="og:title" content="Mwaniki Reports">
+  <meta property="og:description" content="Your trusted source for news, sports, tech, and entertainment.">
+  <meta property="og:image" content="images/Jonathan-Mwaniki-logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <!-- Navigation Bar -->
-    <nav>
-        <div class="logo">
-            <h1>Hustle Hub</h1>
-        </div>
-        <div class="hamburger">☰</div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#jobs">Jobs</a></li>
-            <li><a href="#freelance">Freelance</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#mentorship">Mentorship</a></li>
-            <li><a href="#register">Register</a></li>
-            <li><a href="#employer">Employers</a></li>
-        </ul>
-    </nav>
+<body class="bg-white text-gray-800 font-poppins">
+  <div id="loader" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+    <div class="animate-spin rounded-full h-12 w-12 border-t-4 border-primary"></div>
+  </div>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <h2>Your Hustle Starts Here</h2>
-        <p>Join thousands of Kenyan Gen-Z turning passion into paychecks.</p>
-        <button class="cta-button" onclick="document.getElementById('register').scrollIntoView()">Get Started</button>
-    </section>
+  <header class="bg-gradient-to-r from-primary to-secondary text-white py-4 sticky top-0 z-40 shadow-lg">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <a href="index.html">
+        <img src="images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports" class="h-12">
+      </a>
+      <nav class="flex gap-4">
+        <a href="index.html" class="hover:underline">Blogs</a>
+        <a href="https://x.com/maestropuns" target="_blank" class="hover:underline">X</a>
+        <a href="https://linkedin.com" target="_blank" class="hover:underline">LinkedIn</a>
+      </nav>
+    </div>
+  </header>
 
-    <!-- Jobs Section -->
-    <section id="jobs" class="content-section">
-        <h2>Find Jobs</h2>
-        <p>Browse opportunities tailored for you.</p>
-        <div class="job-listings">
-            <div class="job-card">
-                <h3>Data Entry Clerk</h3>
-                <p>Remote | KSh 500/day</p>
-                <button>Apply Now</button>
-            </div>
-            <div class="job-card">
-                <h3>Customer Support</h3>
-                <p>Nairobi | KSh 20,000/month</p>
-                <button>Apply Now</button>
-            </div>
-        </div>
-    </section>
+  <main class="container mx-auto px-4 py-8 min-h-screen">
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text">
+        Mwaniki Reports
+      </h1>
+      <p class="text-lg text-muted mt-2">Your trusted source for news, sports, tech, and entertainment.</p>
+    </div>
 
-    <!-- Freelance Marketplace Section -->
-    <section id="freelance" class="content-section">
-        <h2>Freelance Marketplace</h2>
-        <p>Offer or hire skills—your way.</p>
-        <div class="freelance-profiles">
-            <div class="profile-card">
-                <h3>Jane M.</h3>
-                <p>Graphic Designer | KSh 1,000/project</p>
-                <button>Hire Now</button>
-            </div>
-            <div class="profile-card">
-                <h3>Peter K.</h3>
-                <p>Writer | KSh 500/article</p>
-                <button>Hire Now</button>
-            </div>
-        </div>
-    </section>
+    <div class="flex flex-col md:flex-row gap-4 mb-8">
+      <div class="relative flex-1">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="Search posts..."
+          class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
+          oninput="filterPosts()"
+        >
+        <i class="fas fa-search absolute right-3 top-1/2 transform -translate-y-1/2 text-muted"></i>
+      </div>
+      <div id="categoryFilter" class="flex flex-wrap gap-2"></div>
+    </div>
 
-    <!-- Skills Section -->
-    <section id="skills" class="content-section">
-        <h2>Learn Skills</h2>
-        <p>Free courses to level up.</p>
-        <div class="skills-courses">
-            <div class="course-card">
-                <h3>Intro to Coding</h3>
-                <p>4 weeks</p>
-                <button>Enroll Now</button>
-            </div>
-            <div class="course-card">
-                <h3>Digital Marketing</h3>
-                <p>6 weeks</p>
-                <button>Enroll Now</button>
-            </div>
-        </div>
-    </section>
+    <div id="postList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+  </main>
 
-    <!-- Mentorship Section -->
-    <section id="mentorship" class="content-section">
-        <h2>Mentorship Network</h2>
-        <p>Connect with pros.</p>
-        <div class="mentor-profiles">
-            <div class="mentor-card">
-                <h3>Sarah N.</h3>
-                <p>Entrepreneur | 10+ yrs</p>
-                <button>Request Mentor</button>
-            </div>
-            <div class="mentor-card">
-                <h3>David O.</h3>
-                <p>Marketer | 7+ yrs</p>
-                <button>Request Mentor</button>
-            </div>
-        </div>
-    </section>
+  <footer class="bg-gradient-to-r from-primary to-secondary text-white py-6">
+    <div class="container mx-auto px-4 text-center">
+      <img src="images/Jonathan-Mwaniki-logo.png" alt="Mwaniki Reports" class="h-10 mx-auto mb-4">
+      <p>&copy; 2025 Jonathan Mwaniki. All rights reserved.</p>
+      <div class="flex justify-center gap-4 mt-2">
+        <a href="https://x.com/maestropuns" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        <a href="https://linkedin.com" target="_blank"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+  </footer>
 
-    <!-- Job Seeker Registration Section -->
-    <section id="register" class="content-section">
-        <h2>Register</h2>
-        <p>Let employers find you!</p>
-       <form id="job-seeker-form">
-    <label for="name">Full Name:</label><input type="text" id="name" name="name" required>
-    <label for="email">Email:</label><input type="email" id="email" name="email" required>
-    <label for="phone">Phone:</label><input type="tel" id="phone" name="phone" required>
-    <label for="category">Job Category:</label>
-    <select id="category" name="category" required>
-        <option value="">Select</option>
-        <option value="tech">Tech (Coding, IT)</option>
-        <option value="design">Creative (Design)</option>
-        <option value="writing">Writing</option>
-        <option value="customer">Customer Service</option>
-        <option value="sales">Sales & Marketing</option>
-        <option value="other">Other</option>
-    </select>
-    <label for="skills">Skills (comma-separated):</label>
-    <textarea id="skills" name="skills" rows="3" placeholder="e.g., Python, Design" required></textarea>
-    <label for="experience">Experience (Years):</label><input type="number" id="experience" name="experience" min="0" max="50" required>
-    <button type="submit">Submit</button>
-</form>
-    </section>
-
-    <!-- Employer Dashboard Section -->
-    <section id="employer" class="content-section">
-        <h2>Employers</h2>
-        <p>Find talent by category.</p>
-        <div class="search-bar">
-            <input type="text" id="employer-search" placeholder="Search skills or name...">
-            <button onclick="searchJobSeekers()">Search</button>
-        </div>
-        <div class="category-filter">
-            <label for="filter-category">Filter:</label>
-            <select id="filter-category" onchange="filterJobSeekers()">
-                <option value="all">All</option>
-                <option value="tech">Tech</option>
-                <option value="design">Creative</option>
-                <option value="writing">Writing</option>
-                <option value="customer">Customer Service</option>
-                <option value="sales">Sales & Marketing</option>
-                <option value="other">Other</option>
-            </select>
-        </div>
-        <div id="job-seeker-list" class="job-seeker-list">
-            <!-- Dynamic list here -->
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer>
-        <p>© 2025 Hustle Hub</p>
-        <div class="social-links">
-            <a href="#">Twitter</a>
-            <a href="#">Email</a>
-        </div>
-    </footer>
-
-    <script src="script.js"></script>
+  <script src="scripts.js"></script>
 </body>
 </html>
